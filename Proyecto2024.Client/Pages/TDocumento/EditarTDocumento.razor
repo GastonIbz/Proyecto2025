@@ -1,0 +1,73 @@
+﻿@page "/api/TDocumentos/editar/{tDocumentoId:int}"
+@inject IHttpServicio http
+@inject NavigationManager navigationManager
+<h3>Editar Tipo de Documento</h3>
+
+<h1>@pepe</h1>
+
+<EditForm Model="tDocumento" OnValidSubmit="Grabar">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Código</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@tDocumento.Codigo" />
+            <ValidationMessage For="@(() => tDocumento.Codigo)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Nombre</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@tDocumento.Nombre" />
+            <ValidationMessage For="@(() => tDocumento.Nombre)" />
+        </div>
+    </div>
+    <br />
+    <button class="btn btn-primary" type="submit">Aceptar</button>
+    <button class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+</EditForm>
+
+@code {
+    [Parameter] public int tDocumentoId { get; set; }
+    private TDocumento tDocumento = new TDocumento();
+
+    string pepe = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await Mostrar();
+    }
+
+    private async Task Mostrar()
+    {
+        var respuesta = await http.Get<TDocumento>($"api/TDocumentos/{tDocumentoId}");
+
+        if (!respuesta.Error)
+        {
+            tDocumento = respuesta.Respuesta;
+        }
+        else
+        {
+            navigationManager.NavigateTo("/api/TDocumentos");
+        }
+    }
+
+
+
+    private async Task Grabar()
+    {
+        //tDocumento.Personas = new List<Persona>();
+
+        var httpRespuesta = await http.Put<TDocumento>($"api/TDocumentos/{tDocumentoId}", tDocumento);
+        if (httpRespuesta.Error)
+        {
+            var body = httpRespuesta.HttpResponseMessage;
+        }
+        navigationManager.NavigateTo("/api/TDocumentos");
+    }
+
+    private void Cancelar()
+    {
+        navigationManager.NavigateTo("/api/TDocumentos");
+    }
+}
