@@ -13,6 +13,9 @@ builder.Services.AddControllers().AddJsonOptions(
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddDbContext<Context>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -23,7 +26,9 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<ITituloRepositorio, TituloRepositorio>();
 builder.Services.AddScoped<ITDocumentoRepositorio, TDocumentoRepositorio>();
-
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 //--------------------------------------------------------------------
 //construccón de la aplicación
 var app = builder.Build();
