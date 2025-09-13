@@ -4,8 +4,24 @@ using Proyecto2024.Server.Repositorio;
 using System.Text.Json.Serialization;
 
 //------------------------------------------------------------------
-//configuracion de los servicios en el constructor de la aplicación
+// Configuracion de los servicios en el constructor de la aplicación
 var builder = WebApplication.CreateBuilder(args);
+
+
+// Nugget de Redis - Servicio de Cache en Memoria 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.InstanceName = "Proyecto2024_";
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+});
+
+
+// 1 - Cración del Constructor: Agregamos Cache al Proyecto, Tiempo 40 Segundos.
+builder.Services.AddOutputCache(options =>
+
+{ options.DefaultExpirationTimeSpan = TimeSpan.FromSeconds(40);
+}
+);
 
 builder.Services.AddControllers().AddJsonOptions(
     x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -47,7 +63,8 @@ app.UseRouting();
 app.MapRazorPages();
 
 app.UseAuthorization();
-
+// 2 - Se agrega el UseOutputCache para el constructor/servicio 
+app.UseOutputCache();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 

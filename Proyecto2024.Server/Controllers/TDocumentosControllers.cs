@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Proyecto2024.BD.Data;
 using Proyecto2024.BD.Data.Entity;
@@ -11,24 +12,38 @@ namespace Proyecto2024.Server.Controllers
     public class TDocumentosControllers : ControllerBase
     {
         private readonly ITDocumentoRepositorio repositorio;
+        //6 - Crea y Asigna el campo de OutputCacheStore
+        private readonly IOutputCacheStore outputCacheStore;
 
-        public TDocumentosControllers(ITDocumentoRepositorio repositorio)
+        //7 - Creación de constante "cacheKey"
+        private const string cacheKey = "TDocumentos";
+
+        //5 - Inyección IOutputCache Store, outputCacheStore en el constructor
+        public TDocumentosControllers(ITDocumentoRepositorio repositorio, IOutputCacheStore outputCacheStore )
         {
             this.repositorio = repositorio;
+            this.outputCacheStore = outputCacheStore;
+            this.outputCacheStore = outputCacheStore;
         }
 
         [HttpGet]    //api/TDocumentos
+        //3 - Agrego OutputCache al GET - En todos los GET  [OutputCache(Tags = [cacheKey])]
+        // 8 - Agrego Tags = "cacheKey" - Clave para Tipo de documentos
+        [OutputCache(Tags = [cacheKey])]
         public async Task<ActionResult<List<TDocumento>>> Get()
         {
             return await repositorio.Select();
         }
 
         /// <summary>
-        /// Endpoint para obtener un objeto de tipo de documento
+        /// Endpoint para obtener un objeto de tipo de documento 
         /// </summary>
         /// <param name="id">Id del objeto</param>
         /// <returns></returns>
+        ///
+
         [HttpGet("{id:int}")] //api/TDocumentos/2
+        [OutputCache(Tags = [cacheKey])]
         public async Task<ActionResult<TDocumento>> Get(int id)
         {
             TDocumento? pepe = await repositorio.SelectById(id);
@@ -40,6 +55,7 @@ namespace Proyecto2024.Server.Controllers
         }
 
         [HttpGet("GetByCod/{cod}")] //api/TDocumentos/GetByCod/DNI
+        [OutputCache(Tags = [cacheKey])]  // En todos los GET  [OutputCache(Tags = [cacheKey])]
         public async Task<ActionResult<TDocumento>> GetByCod(string cod)
         {
             TDocumento? pepe = await repositorio.SelectByCod(cod);
@@ -51,6 +67,7 @@ namespace Proyecto2024.Server.Controllers
         }
 
         [HttpGet("existe/{id:int}")] //api/TDocumentos/existe/2
+        [OutputCache(Tags = [cacheKey])] // En todos los GET  [OutputCache(Tags = [cacheKey])]
         public async Task<ActionResult<bool>> Existe(int id)
         {
             return await repositorio.Existe(id);
@@ -61,7 +78,14 @@ namespace Proyecto2024.Server.Controllers
         {
             try
             {
-                return await repositorio.Insert(entidad);
+                //4 - Sintaxis del Post con ópcion de respuesta erronea
+                var id = await repositorio.Insert(entidad);
+                if (id == 0)
+                {
+                    return BadRequest("No se pudo insertar el tipo de documento");
+                }
+                await outputCacheStore.EvictByTagAsync(cacheKey, default); // En Post - Put - Delete
+                return id;
             }
             catch (Exception err)
             {
@@ -84,6 +108,8 @@ namespace Proyecto2024.Server.Controllers
                 {
                     return BadRequest("No se pudo actualizar el tipo de documento");
                 }
+                // Se agrego el outputCacheStore.EvictByTagAsync para el Put
+                await outputCacheStore.EvictByTagAsync(cacheKey, default); // En Post - Put - Delete
                 return Ok();
 
             }
@@ -99,6 +125,7 @@ namespace Proyecto2024.Server.Controllers
             var resp = await repositorio.Delete(id);
             if (!resp)
             { return BadRequest("El tipo de documento no se pudo borrar"); }
+            await outputCacheStore.EvictByTagAsync(cacheKey, default); // En Post - Put - Delete
             return Ok();
         }
 
