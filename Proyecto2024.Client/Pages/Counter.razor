@@ -1,5 +1,11 @@
 ﻿@page "/counter"
+@using Microsoft.AspNetCore.Authorization
 
+
+Con solo poner este atributo a Counter se restringe el acceso a los usuarios que no son admin
+El authorize no funciona dentro de los componentes que no son direccionables. Por ejemplo en Pages - Crear TDocumento si se puede por que es un componente
+pero en ListaTDocumentos no.
+@attribute [Authorize(Roles= "admin")]
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>

@@ -8,12 +8,11 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 
-// Nugget de Redis - Servicio de Cache en Memoria 
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.InstanceName = "Proyecto2024_";
-    options.Configuration = builder.Configuration.GetConnectionString("Redis");
-});
+// builder.Services.AddStackExchangeRedisCache(options =>
+// {
+//     options.InstanceName = "Proyecto2024_";
+//    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+// });
 
 
 // 1 - Cración del Constructor: Agregamos Cache al Proyecto, Tiempo 40 Segundos.
