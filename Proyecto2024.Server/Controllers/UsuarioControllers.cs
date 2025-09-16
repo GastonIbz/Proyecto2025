@@ -34,7 +34,7 @@ namespace Proyecto2024.Server.Controllers
         [HttpPost("registrar")]
         public async Task<ActionResult<UserTokenDTO>> RegistrarUsuario([FromBody] UserInfoDTO userInfoDTO)
         {
-            // Crea un nuevo objeto de usuario de Identity. Se usa el email como nombre de usuario.
+            // Crea un nuevo objeto de usuario de Identity. Se usa el email como nombre de usuario
 
             var usuario = new IdentityUser { UserName = userInfoDTO.Email, Email = userInfoDTO.Email };
 
@@ -58,7 +58,7 @@ namespace Proyecto2024.Server.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserTokenDTO>> Login([FromBody] UserInfoDTO userInfoDTO)
         {
-            // Intenta validar las credenciales del usuario (email y password).
+            // Intenta validar las credenciales del usuario (email y password)
             var res = await signInManager.PasswordSignInAsync(userInfoDTO.Email,
                                                               userInfoDTO.Password,
                                                               isPersistent: false, // false: la sesión no se recuerda si se cierra el navegador
@@ -66,7 +66,7 @@ namespace Proyecto2024.Server.Controllers
 
             if (res.Succeeded)
             {
-                // genera un token JWT y lo devuelve como respuesta exitosa.
+                // genera un token JWT y lo devuelve como respuesta exitosa
                 return await ConstruirToken(userInfoDTO);
             }
             // Si las credenciales son incorrecta, devuelve un error con un mensaje
@@ -83,7 +83,7 @@ namespace Proyecto2024.Server.Controllers
             // Los "claims" son  datos sobre el usuario que se guardan dentro del token
             var claims = new List<Claim>()
             {
-                // Claim estándar para el email del usuario.
+                // Claim estándar para el email del usuario
                 new Claim(ClaimTypes.Email, userInfoDTO.Email),
                  // Se pueden agregar claims personalizados con cualquier información relevante
                 new Claim("otro", "cualquier cosa")
@@ -94,7 +94,7 @@ namespace Proyecto2024.Server.Controllers
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwtkey"]!));
             // Crea las credenciales de firma usando el algoritmo de seguridad HmacSha256
             var credenciales = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            // Establece la fecha de expiración del token (en este caso 1 mes).
+            // Establece la fecha de expiración del token (en este caso 1 mes)
 
             var expiracion = DateTime.UtcNow.AddMonths(1);
 
