@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Proyecto2024.BD.Data;
 using Proyecto2024.Server.Repositorio;
@@ -36,11 +37,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<Context>(op => op.UseSqlServer("name=conn"));
+// Servicio de Identity - Funcionara con el IdentityUser y IdentityRole por defecto de ASP.NET 
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<Context>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<ITituloRepositorio, TituloRepositorio>();
 builder.Services.AddScoped<ITDocumentoRepositorio, TDocumentoRepositorio>();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -60,7 +66,8 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseRouting();
 app.MapRazorPages();
-
+// Usar Autenticacion y Autorizacion / Utilizar add-migration Autenticacion y update-database en consola nugget
+app.UseAuthentication();
 app.UseAuthorization();
 // 2 - Se agrega el UseOutputCache para el constructor/servicio 
 app.UseOutputCache();

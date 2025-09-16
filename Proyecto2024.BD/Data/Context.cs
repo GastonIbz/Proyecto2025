@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Proyecto2024.BD.Data.Entity;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace Proyecto2024.BD.Data
 {
-    public class Context : DbContext
+    // Hereda de IdentityDbContext para incluir las tablas de identidad
+    public class Context : IdentityDbContext 
     {
         
         public DbSet<Simbolo> Simbolos { get; set; }
