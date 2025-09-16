@@ -1,11 +1,12 @@
 ﻿@page "/counter"
+@inject IJSRuntime js
 @using Microsoft.AspNetCore.Authorization
-
 
 Con solo poner este atributo a Counter se restringe el acceso a los usuarios que no son admin
 El authorize no funciona dentro de los componentes que no son direccionables. Por ejemplo en Pages - Crear TDocumento si se puede por que es un componente
 pero en ListaTDocumentos no.
-@attribute [Authorize(Roles= "admin")]
+
+@attribute [Authorize(Roles= "operador")]
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>
@@ -16,9 +17,18 @@ pero en ListaTDocumentos no.
 
 @code {
     private int currentCount = 0;
-
-    private void IncrementCount()
+    private async Task IncrementCount()
     {
-        currentCount++;
+        var confirmado = await js.Confirmar($"¿Desea incrementar?");
+        if (confirmado)
+        {
+            currentCount++;
+        }
+        else
+        {
+            currentCount--;
+        }
+
     }
+}
 }

@@ -28,7 +28,16 @@ namespace Proyecto2024.Client.Layout.Autorizacion
                 
                 );
 
-            // Si el usuario no esta autenticado, devuelve una identidad desconocida
+            // 2do Usuario
+            var usuarioJuan = new ClaimsIdentity(
+              new List<Claim>
+              {
+                    new Claim(ClaimTypes.Name, "Juan Perez"),
+                    new Claim(ClaimTypes.Role, "operador"),
+                    new Claim("DNI", "12.587.895"),
+              },
+              authenticationType: "ok"
+              );
             return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(usuarioPepe)));
         }
     }
