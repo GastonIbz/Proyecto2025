@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Proyecto2024.BD.Data;
+using Proyecto2024.BD.Usuario;
 using Proyecto2024.Server.Repositorio;
 using System.Text.Json.Serialization;
 
@@ -39,7 +40,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<Context>(op => op.UseSqlServer("name=conn"));
 // Servicio de Identity - Funcionara con el IdentityUser y IdentityRole por defecto de ASP.NET 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<MiUsuario, IdentityRole>()
     .AddEntityFrameworkStores<Context>()
     .AddDefaultTokenProviders();
 
