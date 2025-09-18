@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Proyecto2024.BD.Data;
@@ -9,6 +11,7 @@ namespace Proyecto2024.Server.Controllers
 {
     [ApiController]
     [Route("api/TDocumentos")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // Esto sirve para proteger con Autenticación JWT al controlador
     public class TDocumentosControllers : ControllerBase
     {
         private readonly ITDocumentoRepositorio repositorio;
@@ -30,6 +33,7 @@ namespace Proyecto2024.Server.Controllers
         //3 - Agrego OutputCache al GET - En todos los GET  [OutputCache(Tags = [cacheKey])]
         // 8 - Agrego Tags = "cacheKey" - Clave para Tipo de documentos
         [OutputCache(Tags = [cacheKey])]
+        [AllowAnonymous]
         public async Task<ActionResult<List<TDocumento>>> Get()
         {
             return await repositorio.Select();

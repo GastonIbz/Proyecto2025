@@ -4,17 +4,8 @@
 
 <AuthorizeView> 
     <Authorized>
-        <p>Hola @context.User.Identity?.Name</p>
-        <p> @context.User.Identity?.AuthenticationType</p>
-        <p>Bienvenido, sos un usuario autenticado.</p>
-
-        @foreach (var item in context.User.Claims)
-        {
-            <tr> 
-                <td>@item.Value</td>
-            </tr>
-        }
-)
+        <p>Hola @context.User.Identity!.Name</p>
+        <p>Bienvenido, sos un usuario autenticado</p>
     </Authorized>
 
     <NotAuthorized>

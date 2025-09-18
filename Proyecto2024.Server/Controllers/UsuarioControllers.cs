@@ -83,14 +83,13 @@ namespace Proyecto2024.Server.Controllers
             // Los "claims" son  datos sobre el usuario que se guardan dentro del token
             var claims = new List<Claim>()
             {
-                // Claim estándar para el email del usuario
-                new Claim(ClaimTypes.Email, userInfoDTO.Email),
-                 // Se pueden agregar claims personalizados con cualquier información relevante
-                new Claim("otro", "cualquier cosa")
+                new Claim(ClaimTypes.Name, userInfoDTO.Email), // Claim estándar para el name del usuario
+                new Claim(ClaimTypes.Email, userInfoDTO.Email), // Claim estándar para el email del usuario
+                new Claim("otro", "cualquier cosa") // Se pueden agregar claims personalizados con cualquier información relevante
             };
 
             // Obtiene la clave secreta desde el archivo de configuración appsettings.json
-            // Esta clave es fundamental para el token y verificar que no ha sido modificado
+       
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwtkey"]!));
             // Crea las credenciales de firma usando el algoritmo de seguridad HmacSha256
             var credenciales = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

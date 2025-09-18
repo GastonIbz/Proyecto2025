@@ -1,6 +1,13 @@
 ﻿@page "/logout"
+@using Proyecto2024.Client.Autorizacion
+@inject ILoginService loginService
+@inject NavigationManager navigationManager
 <h3>Logout</h3>
 
 @code {
-
+    protected override async Task OnInitializedAsync()
+    {
+        await loginService.Logout();
+        navigationManager.NavigateTo("/");
+    }
 }
